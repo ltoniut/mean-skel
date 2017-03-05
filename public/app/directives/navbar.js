@@ -1,5 +1,5 @@
 angular.module('directives')
-  .directive("navbar", [
+  .directive('navbar', [
     function() {
       return {
         restrict: 'E',

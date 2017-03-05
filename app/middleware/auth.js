@@ -1,4 +1,4 @@
-var jwt = require("jsonwebtoken"),
+var jwt = require('jsonwebtoken'),
 	config = require("../../config").config(),
 	errors = require("../helpers/errors"),
 	User = require("../models/user");

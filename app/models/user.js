@@ -1,11 +1,11 @@
-var mongoose = require("mongoose"),
+var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   bcrypt = require("bcrypt-nodejs"),
   shortid = require('shortid'),
   mailer = require("../helpers/mailer"),
   config = require("../../config").config(),
   s3Manager = require("../helpers/s3Manager"),
-  fs = require("fs")
+  fs = require('fs')
   foregroundIndexesPlugin = require('./plugins/foregroundIndexesPlugin');
 
 // user schema
@@ -51,9 +51,9 @@ UserSchema.path('picture.original_file.mimetype').validate(function (value) {
 }, 'Invalid file.');
 
 // hash password before user is saved
-UserSchema.pre("save", function(next) {
+UserSchema.pre('save', function(next) {
   var user = this;
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
 
   bcrypt.hash(user.password, null, null, function(err, hash){
     if (err) return next(err);
@@ -62,7 +62,7 @@ UserSchema.pre("save", function(next) {
   });
 });
 
-UserSchema.pre("save", function(next) {
+UserSchema.pre('save', function(next) {
     this.wasNew = this.isNew;
     next();
 });
@@ -71,7 +71,7 @@ UserSchema.pre("save", function(next) {
 UserSchema.pre('save', function(next) {
   var user = this;
 
-  if(!user.isModified("picture")) {
+  if(!user.isModified('picture')) {
     return next();
   }
 
@@ -85,7 +85,7 @@ UserSchema.pre('save', function(next) {
 });
 
 // Send welcome email with activation link
-UserSchema.post("save", function(user) {
+UserSchema.post('save', function(user) {
   if (user.wasNew) {
     mailer.sendActivationEmail(user, function(error){
       // TODO: Handle error if exists
@@ -113,9 +113,9 @@ UserSchema.methods.asJson = function() {
 UserSchema.statics.activateAccount = function(token, callback) {
   // Activate account and change token
   var new_token = shortid.generate();
-  this.findOneAndUpdate({ activation_token: token, active: false }, { active: true, activation_token: new_token }, { select: "active", new: true }, function (err, user){
+  this.findOneAndUpdate({ activation_token: token, active: false }, { active: true, activation_token: new_token }, { select: 'active', new: true }, function (err, user){
     callback(err, user);
   });
 };
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model('User', UserSchema);

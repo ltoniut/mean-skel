@@ -1,5 +1,5 @@
-angular.module("directives")
-  .directive("fileUpload", ['$timeout', 'SessionManager', 'config', 'FileUploader',
+angular.module('directives')
+  .directive('fileUpload', ['$timeout', 'SessionManager', 'config', 'FileUploader',
     function($timeout, SessionManager, config, FileUploader) {
       return {
         restrict: 'E',
@@ -25,7 +25,7 @@ angular.module("directives")
               };
               scope.$watch('formData', function(data) {
                 if(data && data._id) {
-                  scope.uploader.method = "PUT";
+                  scope.uploader.method = 'PUT';
                 }
               });
             }

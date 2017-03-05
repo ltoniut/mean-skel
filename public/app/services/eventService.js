@@ -1,5 +1,5 @@
-angular.module("services")
-	.factory("Event", ['$http', '$window', 'config', function($http, $window, config) {
+angular.module('services')
+	.factory('Event', ['$http', '$window', 'config', function($http, $window, config) {
 		var eventFactory = {};
 
 		// create an event

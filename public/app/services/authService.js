@@ -1,5 +1,5 @@
-angular.module("services")
-	.factory("Auth", ['$http', '$q', 'SessionManager', 'config', function($http, $q, SessionManager, config) {
+angular.module('services')
+	.factory('Auth', ['$http', '$q', 'SessionManager', 'config', function($http, $q, SessionManager, config) {
 		var authFactory = {};
 
 		// login
@@ -40,41 +40,41 @@ angular.module("services")
 		return authFactory;
 	}])
 
-	.factory("SessionManager", ['$window', '$location', function($window, $location) {
+	.factory('SessionManager', ['$window', '$location', function($window, $location) {
 		var sessionManagerFactory = {};
 
 		// get the token out of local storage
 		sessionManagerFactory.getToken = function() {
-			return $window.localStorage.getItem("token");
+			return $window.localStorage.getItem('token');
 		}
 
 		// get the current user out of local storage
 		sessionManagerFactory.getCurrentUser = function() {
-			return $window.localStorage.getItem("current_user");
+			return $window.localStorage.getItem('current_user');
 		}
 
 		// updates the current user in the local storage
 		sessionManagerFactory.updateCurrentUser = function(data) {
-			$window.localStorage.setItem("current_user", JSON.stringify(data.user));
+			$window.localStorage.setItem('current_user', JSON.stringify(data.user));
 		}
 
 		// save token and user to local storage
 		sessionManagerFactory.createSession = function(data) {
-			$window.localStorage.setItem("token", data.token);
-			$window.localStorage.setItem("current_user", JSON.stringify(data.user));
+			$window.localStorage.setItem('token', data.token);
+			$window.localStorage.setItem('current_user', JSON.stringify(data.user));
 		};
 
 		// remove token and user from local storage
 		sessionManagerFactory.removeSession = function() {
-			$window.localStorage.removeItem("current_user");
-			$window.localStorage.removeItem("token");
+			$window.localStorage.removeItem('current_user');
+			$window.localStorage.removeItem('token');
 			$location.path("/login");
 		};
 
 		return sessionManagerFactory;
 	}])
 
-	.factory("AuthInterceptor", ['$q', 'SessionManager', function($q, SessionManager) {
+	.factory('AuthInterceptor', ['$q', 'SessionManager', function($q, SessionManager) {
 		var interceptorFactory = {};
 
 		// attach the token to every request

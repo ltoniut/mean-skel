@@ -1,11 +1,11 @@
-var jwt = require("jsonwebtoken"),
+var jwt = require('jsonwebtoken'),
   config = require("../../config").config(),
   errors = require("../helpers/errors"),
   User = require("../models/user"),
   Event = require("../models/event"),
   Invitation = require("../models/invitation"),
-  mongoose = require("mongoose"),
-  _ = require("lodash");
+  mongoose = require('mongoose'),
+  _ = require('lodash');
 
 
 /**
@@ -23,7 +23,7 @@ var jwt = require("jsonwebtoken"),
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 201 Created
  *    {
- *      token:  "12345abcdef",
+ *      token:  '12345abcdef',
  *      event: {
  *        _id: event._id,
  *        title: "Event Title",
@@ -111,8 +111,8 @@ function sendInvitation(invitation, recipient) {
  *      message:  "Event updated!",
  *      event: {
  *        _id: event._id,
- *        title: "Title",
- *        description: "Description"
+ *        title: 'Title',
+ *        description: 'Description'
  *      }
  *    }
  *

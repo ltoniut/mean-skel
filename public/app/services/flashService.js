@@ -1,5 +1,5 @@
-angular.module("services")
-  .factory("flash", ['$rootScope', function($rootScope) {
+angular.module('services')
+  .factory('flash', ['$rootScope', function($rootScope) {
     $rootScope.alerts = [];
     var queue = [];
 
@@ -15,7 +15,7 @@ angular.module("services")
 
     return {
       setMessage: function(message, type) {
-				type = type || "success";
+				type = type || 'success';
         queue.push({ type: type, msg: message });
       },
       setErrors: function(data) {

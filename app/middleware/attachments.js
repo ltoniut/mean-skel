@@ -1,4 +1,4 @@
-var fs = require("fs");
+var fs = require('fs');
 
 function remove(req, res, next){
 	res.on('finish', function(){

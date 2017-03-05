@@ -1,4 +1,4 @@
-var jwt = require("jsonwebtoken"),
+var jwt = require('jsonwebtoken'),
   config = require("../../config").config(),
   errors = require("../helpers/errors"),
   User = require("../models/user");
@@ -17,12 +17,12 @@ var secret_token = config.secret;
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 200 OK
  *    {
- *      token:  "12345abcdef",
+ *      token:  '12345abcdef',
  *      user: {
  *        _id: user._id,
  *        email: "user@example.com",
- *        firstname: "John",
- *        lastname: "Doe"
+ *        firstname: 'John',
+ *        lastname: 'Doe'
  *      }
  *    }
  *
@@ -107,12 +107,12 @@ function authenticate(req, res){
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 201 Created
  *    {
- *      token:  "12345abcdef",
+ *      token:  '12345abcdef',
  *      user: {
  *        _id: user._id,
  *        email: "user@example.com",
- *        firstname: "John",
- *        lastname: "Doe"
+ *        firstname: 'John',
+ *        lastname: 'Doe'
  *      }
  *    }
  *
@@ -183,8 +183,8 @@ function createUser(req, res){
  *      user: {
  *        _id: user._id,
  *        email: "user@example.com",
- *        firstname: "John",
- *        lastname: "Doe"
+ *        firstname: 'John',
+ *        lastname: 'Doe'
  *      }
  *    }
  *

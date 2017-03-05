@@ -1,5 +1,5 @@
-angular.module("controllers")
-  .controller("userCreateController", ['User', 'Auth', '$location', 'flash', function(User, Auth, $location, flash) {
+angular.module('controllers')
+  .controller('userCreateController', ['User', 'Auth', '$location', 'flash', function(User, Auth, $location, flash) {
     var vm = this;
 
     vm.saveUser = function() {
@@ -17,7 +17,7 @@ angular.module("controllers")
     };
   }])
 
-  .controller("userEditController", ['User', 'Auth', '$location', 'flash', 'config', 'FileUploader', function(User, Auth, $location, flash, config, FileUploader) {
+  .controller('userEditController', ['User', 'Auth', '$location', 'flash', 'config', 'FileUploader', function(User, Auth, $location, flash, config, FileUploader) {
     var vm = this;
     vm.uploader = new FileUploader({
       url: config.api_url + "/user"
@@ -57,7 +57,7 @@ angular.module("controllers")
     };
   }])
 
-  .controller("userActivationController", ['User', '$location', 'flash', '$routeParams', function(User, $location, flash, $routeParams) {
+  .controller('userActivationController', ['User', '$location', 'flash', '$routeParams', function(User, $location, flash, $routeParams) {
     var vm = this;
     var userData = { activation_token: $routeParams.activation_token }
 
@@ -65,7 +65,7 @@ angular.module("controllers")
 				flash.setMessage(response.data.message);
         $location.path("/login");
       }, function(response) {
-				flash.setMessage(response.data.errors.user.message, "danger");
+				flash.setMessage(response.data.errors.user.message, 'danger');
         $location.path("/login");
 			});
   }])

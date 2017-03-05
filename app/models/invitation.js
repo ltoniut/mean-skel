@@ -1,10 +1,10 @@
-var mongoose = require("mongoose"),
+var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   bcrypt = require("bcrypt-nodejs"),
   shortid = require('shortid'),
   mailer = require("../helpers/mailer"),
   config = require("../../config").config(),
-  fs = require("fs");
+  fs = require('fs');
 
 // invitation schema
 var InvitationSchema = new Schema({
@@ -17,7 +17,7 @@ var InvitationSchema = new Schema({
 });
 
 // Send email with invitation code
-InvitationSchema.post("save", function(invitation) {
+InvitationSchema.post('save', function(invitation) {
   if (this.recipient.wasNew) {
     mailer.sendInvitationLink(invitation, function(error){
       // TODO: Handle error if exists
@@ -48,4 +48,4 @@ InvitationSchema.statics.changeInvitationCode = function(code, callback) {
   });
 };
 
-module.exports = mongoose.model("Invitation", InvitationSchema);
+module.exports = mongoose.model('Invitation', InvitationSchema);

@@ -1,5 +1,5 @@
-angular.module("services")
-	.factory("User", ['$http', '$window', 'config', function($http, $window, config) {
+angular.module('services')
+	.factory('User', ['$http', '$window', 'config', function($http, $window, config) {
 		var userFactory = {};
 
 		// create a user
