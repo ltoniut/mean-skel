@@ -5,7 +5,8 @@ var mongoose = require("mongoose"),
   mailer = require("../helpers/mailer"),
   config = require("../../config").config(),
   s3Manager = require("../helpers/s3Manager"),
-  fs = require("fs");
+  fs = require("fs")
+  foregroundIndexesPlugin = require('./plugins/foregroundIndexesPlugin');
 
 // user schema
 var UserSchema = new Schema({
@@ -34,7 +35,7 @@ var UserSchema = new Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-UserSchema.plugin(require("./plugins/foregroundIndexesPlugin"));
+UserSchema.plugin(foregroundIndexesPlugin);
 
 UserSchema.path('email').validate(function (value) {
   var regex = /^\w+([\+\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -82,7 +83,6 @@ UserSchema.pre('save', function(next) {
     next();
   });
 });
-
 
 // Send welcome email with activation link
 UserSchema.post("save", function(user) {

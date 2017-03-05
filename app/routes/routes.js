@@ -27,8 +27,28 @@ function setup(app, handlers) {
 
   app.use("/api/user", userRouter);
 
-// ########## More Routes ##########
+  // ########## More Routes ##########
+  // Events
 
+  var eventsRouter = express.Router();
+  // With Token authentication
+  //eventRouter.use(token_authentication);
+  eventsRouter.post("/", handlers.events.createEvent);
+
+  app.use("/api/events", eventsRouter);
+
+  var eventRouter = express.Router();
+  // With Token authentication
+  //eventRouter.use(token_authentication);
+  eventRouter.put("/", handlers.events.updateEvent);
+
+  app.use("/api/event", eventRouter);
+
+  // Invitations
+  var invitationsRouter = express.Router();
+  invitationsRouter.post("/", handlers.invitations.acceptInvitation);
+
+  app.use("/api/invitations", invitationsRouter);
 };
 
 exports.setup = setup;

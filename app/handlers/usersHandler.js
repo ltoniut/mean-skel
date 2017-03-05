@@ -141,6 +141,7 @@ function authenticate(req, res){
  *    }
  */
 function createUser(req, res){
+  console.log(User.findOne({ email: req.body.email }).email);
   var user = new User();
   user.email = req.body.email;
   user.password = req.body.password;
@@ -154,7 +155,7 @@ function createUser(req, res){
       else
         return res.status(400).json(errors.newError(errors.errorsEnum.CantCreateUser, err));
     }
-    
+
     res.status(201).json({
       message: "User created!",
       user: user.asJson()
@@ -210,6 +211,7 @@ function createUser(req, res){
  *      errors: ['password']
  *    }
  */
+
 function updateCurrentUser(req, res) {
   var user = req.current_user;
   if(req.files.picture) {
@@ -288,7 +290,7 @@ function activateAccount(req, res) {
       return res.status(400).send(errors.newError(errors.errorsEnum.CantActivateAccount, err));
     else if(!user)
       return res.status(400).json(errors.newError(errors.errorsEnum.InvalidToken, {}, ['activation_token']));
-    
+
     res.json({
       message: "Account activated."
     });

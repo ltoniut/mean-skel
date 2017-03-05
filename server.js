@@ -8,6 +8,7 @@ var express = require("express"),
   config = require("./config").config(),
   path = require("path"),
   routes = require("./app/routes/routes"),
+  bluebird = require("bluebird"),
   attachments = require("./app/middleware/attachments");
 
 // ---- APP CONFIGURATION ----
@@ -34,7 +35,8 @@ app.use(function(req, res, next){
 
 // database connection
 if (!mongoose.connection.readyState) {
-  mongoose.connect(config.database);
+  mongoose.Promise = bluebird;
+  mongoose.connect(config.database, { promiseLibrary: bluebird });
   mongoose.set('debug', (!process.env.NODE_ENV || process.env.NODE_ENV === 'development'));
 }
 
@@ -49,7 +51,9 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 // Request Handlers
 var handlers = {
-  users: require('./app/handlers/usersHandler')
+  users: require('./app/handlers/usersHandler'),
+  events: require('./app/handlers/eventsHandler'),
+  invitations: require('./app/handlers/invitationsHandler')
 };
 
 // Application routes

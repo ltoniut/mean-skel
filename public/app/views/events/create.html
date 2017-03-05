@@ -1,0 +1,22 @@
+<div class="row col-sm-6 col-sm-offset-3">
+  <div class="jumbotron">
+    <h1>Create event</h1>
+    <form ng-submit="createEventForm.$valid && event.create()" name="createEventForm" novalidate>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" class="form-control" ng-model="createEvent.createEventData.title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" class="form-control" ng-model="createEvent.createEventData.description" name="description" required>
+      </div>
+
+      <div class="form-group">
+        <label>Day and hour</label>
+        <input type="text" class="datetime-local" ng-model="createEvent.createEventData.datetime" name="dateTime" required>
+      </div>
+      <a href="/createEvent">Create event</a>
+    </form>
+  </div>
+</div>

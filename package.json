@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "NODE_ENV=test jenkins-mocha --cobertura test",
+    "test": "jenkins-mocha --cobertura test",
     "cover": "NODE_ENV=test istanbul cover _mocha",
     "postinstall": "grunt createConfig && node_modules/bower/bin/bower install"
   },
@@ -21,6 +21,7 @@
   "dependencies": {
     "aws-sdk": "^2.2.19",
     "bcrypt-nodejs": "0.0.3",
+    "bluebird": "2.10.2",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "grunt": "0.4.5",

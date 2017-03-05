@@ -25,5 +25,31 @@ function sendActivationEmail(user, done) {
 	}
 }
 
-exports.sendActivationEmail = sendActivationEmail;
+function sendInvitationLink(invitation, done) {
+	try {
+		var link = config.base_url + "/event/" + invitation.code;
+		var creator = invitation.event.creator;
 
+		var email     = new sendgrid.Email({
+			to:       invitation.recipient.email,
+			from:     'no-reply@meanskel.com',
+			fromname: 'MEAN skel',
+			subject:  "Invitation for " + invitation.event.title + ".",
+			html:     "Hello, " + invitation.recipient.firstname + ". You have been invited by " + creator.firstname + creator.lastname +
+			" to participate in " + invitation.event.title + ". Click on the link below to confirm your assistance.</p><p><a href='" + link + "'>" + link + "</a></p>"
+		});
+
+		sendgrid.send(email, function(err, json) {
+			if (err)
+				done(err);
+			else
+				done(null);
+		});
+	}
+	catch(err) {
+	    done(err);
+	}
+}
+
+exports.sendActivationEmail = sendActivationEmail;
+exports.sendInvitationLink = sendInvitationLink;
