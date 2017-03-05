@@ -1,9 +1,9 @@
-var jwt = require('jsonwebtoken'),
+const jwt = require('jsonwebtoken'),
   config = require("../../config").config(),
   errors = require("../helpers/errors"),
   User = require("../models/user");
 
-var secret_token = config.secret;
+const secret_token = config.secret;
 
 /**
  * @api {post} /api/users/authenticate Authenticate user
@@ -64,14 +64,14 @@ function authenticate(req, res){
   User
     .findOne({ email: req.body.email })
     .select("+password +active")
-    .exec(function(err, user){
+    .exec(function (err, user){
       if (err){
         return res.status(400).send(errors.newError(errors.errorsEnum.CantAuthenticateUser, err))
       }
       if (!user) {
         res.status(401).json(errors.newError(errors.errorsEnum.LoginInvalidCredentials));
       } else {
-        var validPassword = user.comparePassword(req.body.password);
+        const validPassword = user.comparePassword(req.body.password);
         if (!validPassword) {
           res.status(401).json(errors.newError(errors.errorsEnum.LoginInvalidCredentials));
         } else {
@@ -79,7 +79,7 @@ function authenticate(req, res){
           if (!user.active) {
             res.status(401).json(errors.newError(errors.errorsEnum.AccountNotActive));
           } else {
-            var token = jwt.sign({
+            const token = jwt.sign({
               _id: user._id,
               email: user.email
             }, secret_token, { expiresIn: 86400 }); // 86400 seconds = 1 day
@@ -142,13 +142,13 @@ function authenticate(req, res){
  */
 function createUser(req, res){
   console.log(User.findOne({ email: req.body.email }).email);
-  var user = new User();
+  const user = new User();
   user.email = req.body.email;
   user.password = req.body.password;
   user.firstname = req.body.firstname;
   user.lastname = req.body.lastname;
 
-  user.save(function(err){
+  user.save(function (err){
     if (err) {
       if (err.code === 11000)
         return res.status(409).json(errors.newError(errors.errorsEnum.UserEmailAlreadyUsed, err, ['email']));
@@ -213,7 +213,7 @@ function createUser(req, res){
  */
 
 function updateCurrentUser(req, res) {
-  var user = req.current_user;
+  const user = req.current_user;
   if(req.files.picture) {
     user.picture = {
       url: null,
@@ -223,7 +223,7 @@ function updateCurrentUser(req, res) {
   }
   if (req.body.password && req.body.new_password) {
     // Check current password
-    var validPassword = user.comparePassword(req.body.password);
+    const validPassword = user.comparePassword(req.body.password);
     if (!validPassword) {
       return res.status(400).json(errors.newError(errors.errorsEnum.CantEditPassword, {}, ['password']));
     }
@@ -239,7 +239,7 @@ function updateCurrentUser(req, res) {
     user.lastname = req.body.lastname
   }
 
-  user.save(function(err, updatedUser){
+  user.save(function (err, updatedUser){
     if (err) return res.status(400).send(errors.newError(errors.errorsEnum.CantEditUser, err));
     res.json({
       message: "User updated!",
@@ -285,7 +285,7 @@ function updateCurrentUser(req, res) {
  *    }
  */
 function activateAccount(req, res) {
-  User.activateAccount(req.body.activation_token, function(err, user) {
+  User.activateAccount(req.body.activation_token, function (err, user) {
     if (err)
       return res.status(400).send(errors.newError(errors.errorsEnum.CantActivateAccount, err));
     else if(!user)

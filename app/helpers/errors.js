@@ -1,12 +1,12 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
-var newError = function(err, detail, keys) {
+const newError = function (err, detail, keys) {
     if(!keys)
         keys = [];
     if(!detail)
         detail = {};
     
-    var errors = detail && !_.isEmpty(detail.errors) ? _.keys(detail.errors) : [];
+    const errors = detail && !_.isEmpty(detail.errors) ? _.keys(detail.errors) : [];
     errors = _.union(errors, keys); //Create an array of uniq values
     return {
         code: err.code,
@@ -16,7 +16,7 @@ var newError = function(err, detail, keys) {
     };
 };
 
-var errorsEnum = {
+const errorsEnum = {
     //Post user
     CantCreateUser: {code: 1000000, message: "Can't create new user."},
     UserEmailAlreadyUsed: {code: 1000001, message: "A user with that email already exists."},

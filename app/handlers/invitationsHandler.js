@@ -1,4 +1,4 @@
-var jwt = require('jsonwebtoken'),
+const jwt = require('jsonwebtoken'),
   config = require("../../config").config(),
   errors = require("../helpers/errors"),
   User = require("../models/user"),
@@ -31,7 +31,7 @@ var jwt = require('jsonwebtoken'),
    */
 
 function acceptInvitation(code, res) {
-  Invitation.acceptInvitation(code, function(err, user) {
+  Invitation.acceptInvitation(code, function (err, user) {
     if (err)
       // handle error
 
@@ -42,7 +42,7 @@ function acceptInvitation(code, res) {
 }
 
 function changeInvitationCode(code, res) {
-  Invitation.changeInvitationCode(code, function(err, user) {
+  Invitation.changeInvitationCode(code, function (err, user) {
     if (err)
       // handle error
 

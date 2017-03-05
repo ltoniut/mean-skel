@@ -1,11 +1,11 @@
-var config = require('../../config').config();
-var sendgrid = require('sendgrid')(config.sendgrid.API_KEY);
+const config = require('../../config').config();
+const sendgrid = require('sendgrid')(config.sendgrid.API_KEY);
 
 function sendActivationEmail(user, done) {
 	try {
-		var link = config.base_url + "/activate/" + user.activation_token;
+		const link = config.base_url + "/activate/" + user.activation_token;
 
-		var email     = new sendgrid.Email({
+		const email     = new sendgrid.Email({
 			to:       user.email,
 			from:     'no-reply@meanskel.com',
 			fromname: 'MEAN skel',
@@ -13,7 +13,7 @@ function sendActivationEmail(user, done) {
 			html:     "<p>Welcome! " + user.email + "</p><p>Please follow this link to activate your account</p><p><a href='" + link + "'>" + link + "</a></p>"
 		});
 
-		sendgrid.send(email, function(err, json) {
+		sendgrid.send(email, function (err, json) {
 			if (err)
 				done(err);
 			else
@@ -27,10 +27,10 @@ function sendActivationEmail(user, done) {
 
 function sendInvitationLink(invitation, done) {
 	try {
-		var link = config.base_url + "/event/" + invitation.code;
-		var creator = invitation.event.creator;
+		const link = config.base_url + "/event/" + invitation.code;
+		const creator = invitation.event.creator;
 
-		var email     = new sendgrid.Email({
+		const email     = new sendgrid.Email({
 			to:       invitation.recipient.email,
 			from:     'no-reply@meanskel.com',
 			fromname: 'MEAN skel',
@@ -39,7 +39,7 @@ function sendInvitationLink(invitation, done) {
 			" to participate in " + invitation.event.title + ". Click on the link below to confirm your assistance.</p><p><a href='" + link + "'>" + link + "</a></p>"
 		});
 
-		sendgrid.send(email, function(err, json) {
+		sendgrid.send(email, function (err, json) {
 			if (err)
 				done(err);
 			else

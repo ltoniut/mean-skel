@@ -1,11 +1,11 @@
-var jwt = require('jsonwebtoken'),
+const jwt = require('jsonwebtoken'),
   config = require("../../config").config(),
   errors = require("../helpers/errors"),
   User = require("../models/user"),
   Event = require("../models/event"),
   Invitation = require("../models/invitation"),
   mongoose = require('mongoose'),
-  _ = require('lodash');
+  { isString } = require('lodash');
 
 
 /**
@@ -47,12 +47,12 @@ var jwt = require('jsonwebtoken'),
  */
 
 function createEvent(req, res) {
-	var event = new Event();
+	const event = new Event();
 	event.title = req.body.title;
 	event.description = req.body.description;
   event.date_time = new Date(req.body.date_time);
 
-  if (!_.isString(req.body.creator)) {
+  if (!isString(req.body.creator)) {
     assignCreatorAndSave(event, req.body.creator)
   } else {
     console.log(req.body.creator);
@@ -60,10 +60,10 @@ function createEvent(req, res) {
   }
 
   req.body.invitations.forEach(function (invitationParam) {
-    var invitation = new Invitation();
+    const invitation = new Invitation();
     invitation.event = event;
     invitation.recipient = new User();
-    if (!_.isString(invitationParam.recipient)) {
+    if (!isString(invitationParam.recipient)) {
   	  invitation.recipient = invitationParam.recipient;
     } else {
       invitation.recipient = User.findById(invitationParam.recipient, (err, recipient) => sendInvitation(invitation, recipient));
@@ -130,7 +130,7 @@ function sendInvitation(invitation, recipient) {
  */
 
 function updateEvent(req, res) {
-  var event = req.body.event;
+  const event = req.body.event;
 
   if (req.body.title) {
     event.title = req.body.title;
@@ -140,7 +140,7 @@ function updateEvent(req, res) {
     event.title = req.body.description;
   }
 
-  event.save(function(err, updatedEvent){
+  event.save(function (err, updatedEvent){
     if (err) {
         // TODO Handle error
     }
@@ -152,19 +152,19 @@ function updateEvent(req, res) {
 }
 
 function addInvitee(req, res) {
-  var event = req.body.event;
-  var invitation = req.body.invitation;
+  const event = req.body.event;
+  const invitation = req.body.invitation;
 
   event.addParticipant(invitation.recipient);
 }
 
 function cancelInvitation(req, res) {
-  var event = req.body.event;
-  var invitation = req.body.invitation;
+  const event = req.body.event;
+  const invitation = req.body.invitation;
   invitation.confirmation_code = shortid.generate();
 
   event.removeParticipant(invitation.recipient);
-  Invitation.changeInvitationCode(invitation.confirmation_code, function(err, user) {
+  Invitation.changeInvitationCode(invitation.confirmation_code, function (err, user) {
     if (err)
       // handle error
 

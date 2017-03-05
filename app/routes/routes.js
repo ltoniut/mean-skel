@@ -1,10 +1,10 @@
-var express = require('express');
-var token_authentication = require("../middleware/auth");
+const express = require('express');
+const token_authentication = require("../middleware/auth");
 
 function setup(app, handlers) {
 
 // ########## Authentication Route ##########
-  var authenticationRouter = express.Router();
+  const authenticationRouter = express.Router();
 
   // Without authentication
   authenticationRouter.post("/authenticate", handlers.users.authenticate)
@@ -12,7 +12,7 @@ function setup(app, handlers) {
   app.use("/api/users", authenticationRouter);
 
 // ########## User Routes ##########
-  var usersRouter = express.Router();
+  const usersRouter = express.Router();
 
   // Without authentication
   usersRouter.post("/", handlers.users.createUser);
@@ -20,7 +20,7 @@ function setup(app, handlers) {
 
   app.use("/api/users", usersRouter);
 
-  var userRouter = express.Router();
+  const userRouter = express.Router();
   // With Token authentication
   userRouter.use(token_authentication);
   userRouter.put("/", handlers.users.updateCurrentUser)
@@ -30,14 +30,14 @@ function setup(app, handlers) {
   // ########## More Routes ##########
   // Events
 
-  var eventsRouter = express.Router();
+  const eventsRouter = express.Router();
   // With Token authentication
   //eventRouter.use(token_authentication);
   eventsRouter.post("/", handlers.events.createEvent);
 
   app.use("/api/events", eventsRouter);
 
-  var eventRouter = express.Router();
+  const eventRouter = express.Router();
   // With Token authentication
   //eventRouter.use(token_authentication);
   eventRouter.put("/", handlers.events.updateEvent);
@@ -45,7 +45,7 @@ function setup(app, handlers) {
   app.use("/api/event", eventRouter);
 
   // Invitations
-  var invitationsRouter = express.Router();
+  const invitationsRouter = express.Router();
   invitationsRouter.post("/", handlers.invitations.acceptInvitation);
 
   app.use("/api/invitations", invitationsRouter);

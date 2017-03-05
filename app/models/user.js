@@ -1,4 +1,4 @@
-var mongoose = require('mongoose'),
+const mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   bcrypt = require("bcrypt-nodejs"),
   shortid = require('shortid'),
@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
   foregroundIndexesPlugin = require('./plugins/foregroundIndexesPlugin');
 
 // user schema
-var UserSchema = new Schema({
+const UserSchema = new Schema({
   email: { type: String, trim: true, required: "Email is required.", index: { unique: true }},
   password: { type: String, required: "Password is required.", select: false, minlength: [8, "Password is too short." ] },
   firstname: { type: String, trim: true, required: "First name is required."},
@@ -38,44 +38,44 @@ var UserSchema = new Schema({
 UserSchema.plugin(foregroundIndexesPlugin);
 
 UserSchema.path('email').validate(function (value) {
-  var regex = /^\w+([\+\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const regex = /^\w+([\+\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   return regex.test(value);
 }, 'Please fill a valid email address.');
 
 UserSchema.path('picture.original_file.mimetype').validate(function (value) {
   if (value) {
-    var mimetypes = ["image/jpeg", "image/png"];
+    const mimetypes = ["image/jpeg", "image/png"];
     return (mimetypes.indexOf(value) > -1);
   } else
     return true;
 }, 'Invalid file.');
 
 // hash password before user is saved
-UserSchema.pre('save', function(next) {
-  var user = this;
+UserSchema.pre('save', function (next) {
+  const user = this;
   if (!user.isModified('password')) return next();
 
-  bcrypt.hash(user.password, null, null, function(err, hash){
+  bcrypt.hash(user.password, null, null, function (err, hash){
     if (err) return next(err);
     user.password = hash;
     next();
   });
 });
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
     this.wasNew = this.isNew;
     next();
 });
 
 // Upload picture to s3
-UserSchema.pre('save', function(next) {
-  var user = this;
+UserSchema.pre('save', function (next) {
+  const user = this;
 
   if(!user.isModified('picture')) {
     return next();
   }
 
-  s3Manager.uploadFile(user.picture.original_file, "picture/" + user._id, function(err, path) {
+  s3Manager.uploadFile(user.picture.original_file, "picture/" + user._id, function (err, path) {
     if (err) return next(err);
 
     user.set("picture.path", path);
@@ -85,22 +85,22 @@ UserSchema.pre('save', function(next) {
 });
 
 // Send welcome email with activation link
-UserSchema.post('save', function(user) {
+UserSchema.post('save', function (user) {
   if (user.wasNew) {
-    mailer.sendActivationEmail(user, function(error){
+    mailer.sendActivationEmail(user, function (error){
       // TODO: Handle error if exists
     });
   }
 });
 
 // method to compare a given password with the database hash
-UserSchema.methods.comparePassword = function(password) {
-  var user = this;
+UserSchema.methods.comparePassword = function (password) {
+  const user = this;
   return bcrypt.compareSync(password, user.password);
 };
 
-UserSchema.methods.asJson = function() {
-  var user = this;
+UserSchema.methods.asJson = function () {
+  const user = this;
   return {
     _id: user._id,
     email: user.email,
@@ -110,9 +110,9 @@ UserSchema.methods.asJson = function() {
   };
 };
 
-UserSchema.statics.activateAccount = function(token, callback) {
+UserSchema.statics.activateAccount = function (token, callback) {
   // Activate account and change token
-  var new_token = shortid.generate();
+  const new_token = shortid.generate();
   this.findOneAndUpdate({ activation_token: token, active: false }, { active: true, activation_token: new_token }, { select: 'active', new: true }, function (err, user){
     callback(err, user);
   });
