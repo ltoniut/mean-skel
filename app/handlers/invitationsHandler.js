@@ -30,10 +30,12 @@ const jwt = require('jsonwebtoken'),
    *
    */
 
-function acceptInvitation(code, res) {
+function acceptInvitation(req, res) {
+  const code = req.body.code;
   Invitation.acceptInvitation(code, function (err, user) {
-    if (err)
-      // handle error
+    if (err) {
+      throw err;
+    }
 
     res.json({
       message: "Invitation accepted."
@@ -43,8 +45,9 @@ function acceptInvitation(code, res) {
 
 function changeInvitationCode(code, res) {
   Invitation.changeInvitationCode(code, function (err, user) {
-    if (err)
-      // handle error
+    if (err) {
+      return err;
+    }
 
     res.json({
       message: "Invitation cancelled."

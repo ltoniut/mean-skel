@@ -15,7 +15,7 @@ const EventSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' }
   }],
   created_at: { type: Date, default: Date.now },
-  date_time: { type: Date, required: "A scheduled date and time are required." }
+  date_time: { type: Date, required: "A scheduled date and time are required.", validate: [function (val) {return val.getTime() > new Date().getTime();}, 'Event date should be sometime after creation'] }
 });
 
 EventSchema.methods.addParticipant = function (user) {
@@ -25,9 +25,5 @@ EventSchema.methods.addParticipant = function (user) {
 EventSchema.methods.removeParticipant = function (user) {
   drop(this.participants, user);
 }
-
-EventSchema.path('date_time').validate(function (value) {
-  return Date.now < value;
-}, 'Event date should be sometime after creation.');
 
 module.exports = mongoose.model('Event', EventSchema);
