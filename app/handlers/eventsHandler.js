@@ -55,7 +55,6 @@ function createEvent(req, res) {
   if (!isString(req.body.creator)) {
     assignCreatorAndSave(event, req.body.creator)
   } else {
-    console.log(req.body.creator);
     event.creator = User.findById(req.body.creator, (err, creator) => assignCreatorAndSave(event, creator));
   }
 
@@ -89,7 +88,7 @@ function sendInvitation(invitation, recipient) {
 
  invitation.save(function (err) {
    if (err) {
-     // TODO Handle errors
+     throw err;
    };
  });
 }
@@ -100,8 +99,7 @@ function sendInvitation(invitation, recipient) {
  * @apiGroup Events
  * @apiVersion 0.1.0
  *
- * @apiHeader {String} x-access-token Users unique access token
- *
+ * @apiParam {String} id Event id
  * @apiParam {String} title Event title
  * @apiParam {String} description Event description
  *
@@ -130,49 +128,119 @@ function sendInvitation(invitation, recipient) {
  */
 
 function updateEvent(req, res) {
-  const event = req.body.event;
+  Event.findByIdAndUpdate( req.body.id, { title: req.body.title, description: req.body.description }, { new: true }, function (err, updatedEvent){
 
-  if (req.body.title) {
-    event.title = req.body.title;
-  }
-
-  if (req.body.description) {
-    event.title = req.body.description;
-  }
-
-  event.save(function (err, updatedEvent){
-    if (err) {
-        // TODO Handle error
+    if(err){
+        console.log(err);
+        console.log("Something wrong when updating data!");
+        throw(err);
     }
-    res.json({
-      message: "Event updated!",
-      event: updatedEvent.asJson()
-    });
+  });
+
+  res.json({
+    message: "Event updated!",
+    event: updatedEvent.asJson()
   });
 }
+
+/**
+ * @api {post} /api/eventInvitations Add invitation
+ * @apiName invitee_adding
+ * @apiGroup Events
+ * @apiVersion 0.1.0
+ *
+ * @apiParam {String} event Event id
+ * @apiParam {String} recipient Recipient id
+ *
+ * @apiSuccessExample Success-Response
+ *    HTTP/1.1 200 OK
+ *    {
+ *      message:  "Invitation sent!",
+ *      event: {
+ *        _id: event._id,
+ *        invitation: invitation._id
+ *      }
+ *    }
+ *
+ * @apiError CantEditDescritpion Can't edit description
+ *
+ * @apiErrorExample Error-Response
+ *    HTTP/1.1 400 Bad Request
+ *    {
+ *      code: 1000200,
+ *      message: "Can't edit user.",
+ *      detail: {},
+ *      errors: []
+ *    }
+ *
+ */
 
 function addInvitee(req, res) {
-  const event = req.body.event;
-  const invitation = req.body.invitation;
-
-  event.addParticipant(invitation.recipient);
+  const invitation = new Invitation();
+  invitation.event = Event.findById(req.body.event, (err, targetEvent) => assignEvent(invitation, targetEvent, req.body.recipient));
 }
+
+function assignEvent(invitation, targetEvent, recipient) {
+ invitation.event = targetEvent;
+ invitation.recipient = User.findById(recipient, (err, recipient) => sendInvitation(invitation, recipient));
+}
+
+/**
+ * @api {post} /api/eventInvitation Cancel invitation
+ * @apiName invitation_cancelling
+ * @apiGroup Events
+ * @apiVersion 0.1.0
+ *
+ * @apiParam {String} event Event id
+ * @apiParam {String} user User id
+ *
+ * @apiSuccessExample Success-Response
+ *    HTTP/1.1 200 OK
+ *    {
+ *      message:  "Invitation cancelled!",
+ *      invitation: {
+ *        _id: invitation._id,
+ *        title: "Event Title"
+ *      }
+ *    }
+ *
+ * @apiError CantEditDescritpion Can't edit description
+ *
+ * @apiErrorExample Error-Response
+ *    HTTP/1.1 400 Bad Request
+ *    {
+ *      code: 1000200,
+ *      message: "Can't edit user.",
+ *      detail: {},
+ *      errors: []
+ *    }
+ *
+ */
 
 function cancelInvitation(req, res) {
-  const event = req.body.event;
-  const invitation = req.body.invitation;
-  invitation.confirmation_code = shortid.generate();
+  const newCode = shortid.generate();
+  const invitation = Invitation.findAndUpdate( { recipient: req.body.user, event: req.body.event } , { confirmation_code: newCode } , { new: true }, function (err, cancellednvitation) {
+    if(err){
+        console.log(err);
+        console.log("Something wrong when updating data!");
+        throw(err);
+    };
 
-  event.removeParticipant(invitation.recipient);
-  Invitation.changeInvitationCode(invitation.confirmation_code, function (err, user) {
-    if (err)
-      // handle error
-
-    res.json({
-      message: "Invitation cancelled."
-    });
+    const event = Event.update(
+      { event: req.body.event },
+      { $pull: { participants : { _id : req.body.user } } },
+      { safe: true },
+      function removeConnectionsCB(err, obj) {
+        if(err){
+            console.log(err);
+            console.log("Something wrong when updating data!");
+            throw(err);
+        }
+      });
   });
 }
+
+
 
 exports.createEvent = createEvent;
 exports.updateEvent = updateEvent;

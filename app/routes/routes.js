@@ -44,6 +44,16 @@ function setup(app, handlers) {
 
   app.use("/api/event", eventRouter);
 
+  const eventInvitationsRouter = express.Router();
+
+  eventInvitationsRouter.post("/", handlers.events.addInvitee);
+  app.use("/api/eventInvitations", eventInvitationsRouter);
+
+  const eventInvitationRouter = express.Router();
+
+  eventInvitationRouter.post("/", handlers.events.cancelInvitation);
+  app.use("/api/eventInvitation", eventInvitationRouter);
+
   // Invitations
   const invitationsRouter = express.Router();
   invitationsRouter.post("/", handlers.invitations.acceptInvitation);

@@ -214,6 +214,7 @@ function createUser(req, res){
 
 function updateCurrentUser(req, res) {
   const user = req.current_user;
+  console.log(user);
   if(req.files.picture) {
     user.picture = {
       url: null,

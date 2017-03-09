@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema,
+  Invitation = require('../models/invitation'),
   bcrypt = require('bcrypt-nodejs'),
   config = require('../../config').config(),
   fs = require('fs'),
