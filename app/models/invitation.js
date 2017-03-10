@@ -3,17 +3,17 @@ const mongoose = require('mongoose'),
   Event = require('../models/event'),
   bcrypt = require('bcrypt-nodejs'),
   shortid = require('shortid'),
-  mailer = require("../helpers/mailer"),
-  config = require("../../config").config(),
+  mailer = require('../helpers/mailer'),
+  config = require('../../config').config(),
   { concat } = require('lodash'),
   fs = require('fs');
 
 // invitation schema
 const InvitationSchema = new Schema({
-  event: { type: Schema.Types.ObjectId, ref: 'Event', required: "An event must be selected." },
+  event: { type: Schema.Types.ObjectId, ref: 'Event', required: 'An event must be selected.' },
   accepted: { type: Boolean, default: false, select: true },
   confirmation_code: { type: String, select: false, unique: true, 'default': shortid.generate }, // Code in link url for accepting the invitation
-  recipient: { type: Schema.Types.ObjectId, ref: 'User', required: "A recipient must be selected." },
+  recipient: { type: Schema.Types.ObjectId, ref: 'User', required: 'A recipient must be selected.' },
   created_at: { type: Date, default: Date.now },
   accepted_at: { type: Date, default: null }
 });
@@ -38,17 +38,17 @@ InvitationSchema.statics.acceptInvitation = function (code, callback) {
 
     if(err){
         console.log(err);
-        console.log("Something wrong when updating data!");
+        console.log('Something wrong when updating data!');
         throw(err);
     }
 
     Event.findByIdAndUpdate(invitation.event,
-      { "$push": { "participants": { user: invitation.recipient } } },
+      { '$push': { 'participants': { user: invitation.recipient } } },
       { new : true },
         function(err, model) {
           if(err) {
             console.log(err);
-            console.log("Something wrong when adding participant!");
+            console.log('Something wrong when adding participant!');
             throw(err);
           }
         });

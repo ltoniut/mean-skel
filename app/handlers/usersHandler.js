@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken'),
-  config = require("../../config").config(),
-  errors = require("../helpers/errors"),
-  User = require("../models/user");
+  config = require('../../config').config(),
+  errors = require('../helpers/errors'),
+  User = require('../models/user');
 
 const secret_token = config.secret;
 
@@ -20,7 +20,7 @@ const secret_token = config.secret;
  *      token:  '12345abcdef',
  *      user: {
  *        _id: user._id,
- *        email: "user@example.com",
+ *        email: 'user@example.com',
  *        firstname: 'John',
  *        lastname: 'Doe'
  *      }
@@ -32,7 +32,7 @@ const secret_token = config.secret;
  *    HTTP/1.1 401 Unauthorized
  *    {
  *      code: 1000100,
- *      message: "Invalid credentials.",
+ *      message: 'Invalid credentials.',
  *      detail: {},
  *      errors: []
  *    }
@@ -44,7 +44,7 @@ const secret_token = config.secret;
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000101,
- *      message: "There was a problem on authenticate user.",
+ *      message: 'There was a problem on authenticate user.',
  *      detail: {},
  *      errors: []
  *    }
@@ -55,7 +55,7 @@ const secret_token = config.secret;
  *    HTTP/1.1 401 Unauthorized
  *    {
  *      code: 1000102,
- *      message: "Please activate your account.",
+ *      message: 'Please activate your account.',
  *      detail: {},
  *      errors: []
  *    }
@@ -63,7 +63,7 @@ const secret_token = config.secret;
 function authenticate(req, res){
   User
     .findOne({ email: req.body.email })
-    .select("+password +active")
+    .select('+password +active')
     .exec(function (err, user){
       if (err){
         return res.status(400).send(errors.newError(errors.errorsEnum.CantAuthenticateUser, err))
@@ -110,7 +110,7 @@ function authenticate(req, res){
  *      token:  '12345abcdef',
  *      user: {
  *        _id: user._id,
- *        email: "user@example.com",
+ *        email: 'user@example.com',
  *        firstname: 'John',
  *        lastname: 'Doe'
  *      }
@@ -123,7 +123,7 @@ function authenticate(req, res){
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000000,
- *      message: "Can't create new user.",
+ *      message: 'Can't create new user.',
  *      detail: {},
  *      errors: []
  *    }
@@ -135,7 +135,7 @@ function authenticate(req, res){
  *    HTTP/1.1 409 Conflict
  *    {
  *      code: 1000001,
- *      message: "A user with that email already exists.",
+ *      message: 'A user with that email already exists.',
  *      detail: {},
  *      errors: ['email']
  *    }
@@ -157,7 +157,7 @@ function createUser(req, res){
     }
 
     res.status(201).json({
-      message: "User created!",
+      message: 'User created!',
       user: user.asJson()
     });
   });
@@ -179,10 +179,10 @@ function createUser(req, res){
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 200 OK
  *    {
- *      message:  "User updated!",
+ *      message:  'User updated!',
  *      user: {
  *        _id: user._id,
- *        email: "user@example.com",
+ *        email: 'user@example.com',
  *        firstname: 'John',
  *        lastname: 'Doe'
  *      }
@@ -194,7 +194,7 @@ function createUser(req, res){
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000200,
- *      message: "Can't edit user.",
+ *      message: 'Can't edit user.',
  *      detail: {},
  *      errors: []
  *    }
@@ -206,7 +206,7 @@ function createUser(req, res){
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000201,
- *      message: "Current password is invalid.",
+ *      message: 'Current password is invalid.',
  *      detail: {},
  *      errors: ['password']
  *    }
@@ -243,7 +243,7 @@ function updateCurrentUser(req, res) {
   user.save(function (err, updatedUser){
     if (err) return res.status(400).send(errors.newError(errors.errorsEnum.CantEditUser, err));
     res.json({
-      message: "User updated!",
+      message: 'User updated!',
       user: updatedUser.asJson()
     });
   });
@@ -260,7 +260,7 @@ function updateCurrentUser(req, res) {
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 200 OK
  *    {
- *      message:  "Account activated."
+ *      message:  'Account activated.'
  *    }
  *
  * @apiError CantActivateAccount There was a problem at activate account
@@ -269,7 +269,7 @@ function updateCurrentUser(req, res) {
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000300,
- *      message: "There was a problem at activate account.",
+ *      message: 'There was a problem at activate account.',
  *      detail: {},
  *      errors: []
  *    }
@@ -280,7 +280,7 @@ function updateCurrentUser(req, res) {
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000301,
- *      message: "Invalid token.",
+ *      message: 'Invalid token.',
  *      detail: {},
  *      errors: ['activation_token']
  *    }
@@ -293,7 +293,7 @@ function activateAccount(req, res) {
       return res.status(400).json(errors.newError(errors.errorsEnum.InvalidToken, {}, ['activation_token']));
 
     res.json({
-      message: "Account activated."
+      message: 'Account activated.'
     });
   });
 }

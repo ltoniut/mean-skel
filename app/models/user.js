@@ -1,19 +1,19 @@
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema,
-  bcrypt = require("bcrypt-nodejs"),
+  bcrypt = require('bcrypt-nodejs'),
   shortid = require('shortid'),
-  mailer = require("../helpers/mailer"),
-  config = require("../../config").config(),
-  s3Manager = require("../helpers/s3Manager"),
+  mailer = require('../helpers/mailer'),
+  config = require('../../config').config(),
+  s3Manager = require('../helpers/s3Manager'),
   fs = require('fs')
   foregroundIndexesPlugin = require('./plugins/foregroundIndexesPlugin');
 
 // user schema
 const UserSchema = new Schema({
-  email: { type: String, trim: true, required: "Email is required.", index: { unique: true }},
-  password: { type: String, required: "Password is required.", select: false, minlength: [8, "Password is too short." ] },
-  firstname: { type: String, trim: true, required: "First name is required."},
-  lastname: { type: String, trim: true, required: "Last name is required."},
+  email: { type: String, trim: true, required: 'Email is required.', index: { unique: true }},
+  password: { type: String, required: 'Password is required.', select: false, minlength: [8, 'Password is too short.' ] },
+  firstname: { type: String, trim: true, required: 'First name is required.'},
+  lastname: { type: String, trim: true, required: 'Last name is required.'},
   activation_token: { type: String, select: false, unique: true, 'default': shortid.generate },
   active: { type: Boolean, default: false, select: false },
   picture: {
@@ -44,7 +44,7 @@ UserSchema.path('email').validate(function (value) {
 
 UserSchema.path('picture.original_file.mimetype').validate(function (value) {
   if (value) {
-    const mimetypes = ["image/jpeg", "image/png"];
+    const mimetypes = ['image/jpeg', 'image/png'];
     return (mimetypes.indexOf(value) > -1);
   } else
     return true;
@@ -75,11 +75,11 @@ UserSchema.pre('save', function (next) {
     return next();
   }
 
-  s3Manager.uploadFile(user.picture.original_file, "picture/" + user._id, function (err, path) {
+  s3Manager.uploadFile(user.picture.original_file, 'picture/' + user._id, function (err, path) {
     if (err) return next(err);
 
-    user.set("picture.path", path);
-    user.set("picture.url", config.aws.url_base + config.aws.S3_BUCKET_NAME + "/" + path);
+    user.set('picture.path', path);
+    user.set('picture.url', config.aws.url_base + config.aws.S3_BUCKET_NAME + '/' + path);
     next();
   });
 });

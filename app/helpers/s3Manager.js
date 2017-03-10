@@ -11,7 +11,7 @@ aws.config.region = config.aws.region;
 
 function uploadFile(file, path, next) {
 	try {
-		const filePath = path + "/" + file.name;
+		const filePath = path + '/' + file.name;
 		const body = fs.createReadStream(file.path);
 
 		// Handle read stream error

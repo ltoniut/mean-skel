@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken'),
-  config = require("../../config").config(),
-  errors = require("../helpers/errors"),
-  User = require("../models/user"),
-  Event = require("../models/event"),
-  Invitation = require("../models/invitation");
+  config = require('../../config').config(),
+  errors = require('../helpers/errors'),
+  User = require('../models/user'),
+  Event = require('../models/event'),
+  Invitation = require('../models/invitation');
 
   /**
    * @api {post} /api/invitations Accept invitation
@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken'),
    * @apiSuccessExample Success-Response
    *    HTTP/1.1 202 Accepted
    *    {
-   *      message: "Invitation accepted."
+   *      message: 'Invitation accepted.'
    *    }
    *
    *
@@ -25,7 +25,7 @@ const jwt = require('jsonwebtoken'),
    * @apiErrorExample Error-Response
    *    HTTP/1.1 400 Bad Request
    *    {
-   *      message: "Invitation failed."
+   *      message: 'Invitation failed.'
    *    }
    *
    */
@@ -38,7 +38,7 @@ function acceptInvitation(req, res) {
     }
 
     res.json({
-      message: "Invitation accepted."
+      message: 'Invitation accepted.'
     });
   });
 }
@@ -50,7 +50,7 @@ function changeInvitationCode(code, res) {
     }
 
     res.json({
-      message: "Invitation cancelled."
+      message: 'Invitation cancelled.'
     });
   });
 }

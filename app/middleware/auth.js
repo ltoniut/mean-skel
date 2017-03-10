@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken'),
-	config = require("../../config").config(),
-	errors = require("../helpers/errors"),
-	User = require("../models/user");
+	config = require('../../config').config(),
+	errors = require('../helpers/errors'),
+	User = require('../models/user');
 
 const secret_token = config.secret;
 
 // middleware to authenticate routes
 module.exports = function (req, res, next) {
-	const token = req.headers["x-access-token"];
+	const token = req.headers['x-access-token'];
 	if (token) {
 		jwt.verify(token, secret_token, function (err, decoded){
 			if (err) {
@@ -15,7 +15,7 @@ module.exports = function (req, res, next) {
 			} else {
 				// Get user
 				User.findOne({ _id: decoded._id, email: decoded.email, active: true })
-					.select("+password")
+					.select('+password')
 					.exec(function (err, user) {
 					if (err || !user) {
 						return res.status(403).send(errors.newError(errors.errorsEnum.AuthToken, err ? err : {}));

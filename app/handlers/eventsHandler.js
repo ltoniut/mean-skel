@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken'),
-  config = require("../../config").config(),
-  errors = require("../helpers/errors"),
-  User = require("../models/user"),
-  Event = require("../models/event"),
-  Invitation = require("../models/invitation"),
+  config = require('../../config').config(),
+  errors = require('../helpers/errors'),
+  User = require('../models/user'),
+  Event = require('../models/event'),
+  shortid = require('shortid'),
+  Invitation = require('../models/invitation'),
   mongoose = require('mongoose'),
   { isString } = require('lodash');
 
@@ -26,9 +27,9 @@ const jwt = require('jsonwebtoken'),
  *      token:  '12345abcdef',
  *      event: {
  *        _id: event._id,
- *        title: "Event Title",
- *        description: "Event Description",
- *        date_time: "19-8-2017 19:30"
+ *        title: 'Event Title',
+ *        description: 'Event Description',
+ *        date_time: '19-8-2017 19:30'
  *      }
  *    }
  *
@@ -39,7 +40,7 @@ const jwt = require('jsonwebtoken'),
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000000,
- *      message: "Can't create new event.",
+ *      message: 'Can't create new event.',
  *      detail: {},
  *      errors: []
  *    }
@@ -106,7 +107,7 @@ function sendInvitation(invitation, recipient) {
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 200 OK
  *    {
- *      message:  "Event updated!",
+ *      message:  'Event updated!',
  *      event: {
  *        _id: event._id,
  *        title: 'Title',
@@ -120,7 +121,7 @@ function sendInvitation(invitation, recipient) {
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000200,
- *      message: "Can't edit user.",
+ *      message: 'Can't edit user.',
  *      detail: {},
  *      errors: []
  *    }
@@ -132,19 +133,19 @@ function updateEvent(req, res) {
 
     if(err){
         console.log(err);
-        console.log("Something wrong when updating data!");
+        console.log('Something wrong when updating data!');
         throw(err);
     }
   });
 
   res.json({
-    message: "Event updated!",
+    message: 'Event updated!',
     event: updatedEvent.asJson()
   });
 }
 
 /**
- * @api {post} /api/eventInvitations Add invitation
+ * @api {post} /api/event/invitations Add invitation
  * @apiName invitee_adding
  * @apiGroup Events
  * @apiVersion 0.1.0
@@ -155,7 +156,7 @@ function updateEvent(req, res) {
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 200 OK
  *    {
- *      message:  "Invitation sent!",
+ *      message:  'Invitation sent!',
  *      event: {
  *        _id: event._id,
  *        invitation: invitation._id
@@ -168,7 +169,7 @@ function updateEvent(req, res) {
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000200,
- *      message: "Can't edit user.",
+ *      message: 'Can't edit user.',
  *      detail: {},
  *      errors: []
  *    }
@@ -186,7 +187,7 @@ function assignEvent(invitation, targetEvent, recipient) {
 }
 
 /**
- * @api {post} /api/eventInvitation Cancel invitation
+ * @api {post} /api/event/invitation Cancel invitation
  * @apiName invitation_cancelling
  * @apiGroup Events
  * @apiVersion 0.1.0
@@ -197,20 +198,20 @@ function assignEvent(invitation, targetEvent, recipient) {
  * @apiSuccessExample Success-Response
  *    HTTP/1.1 200 OK
  *    {
- *      message:  "Invitation cancelled!",
+ *      message:  'Invitation cancelled!',
  *      invitation: {
  *        _id: invitation._id,
- *        title: "Event Title"
+ *        title: 'Event Title'
  *      }
  *    }
  *
- * @apiError CantEditDescritpion Can't edit description
+ * @apiError CantRemoveInvitee Can't remove invitee
  *
  * @apiErrorExample Error-Response
  *    HTTP/1.1 400 Bad Request
  *    {
  *      code: 1000200,
- *      message: "Can't edit user.",
+ *      message: 'Can't edit user.',
  *      detail: {},
  *      errors: []
  *    }
@@ -218,24 +219,25 @@ function assignEvent(invitation, targetEvent, recipient) {
  */
 
 function cancelInvitation(req, res) {
+  console.log('Confirm')
   const newCode = shortid.generate();
-  const invitation = Invitation.findAndUpdate( { recipient: req.body.user, event: req.body.event } , { confirmation_code: newCode } , { new: true }, function (err, cancellednvitation) {
+  const invitation = Invitation.findOneAndUpdate( { recipient: req.body.user, event: req.body.event } , { confirmation_code: newCode } , { new: true }, function (err, cancellednvitation) {
     if(err){
         console.log(err);
-        console.log("Something wrong when updating data!");
+        console.log('Something wrong when updating data!');
         throw(err);
     };
 
     const event = Event.update(
-      { event: req.body.event },
-      { $pull: { participants : { _id : req.body.user } } },
-      { safe: true },
+      { _id: req.body.event },
+      { $pull: { 'participants' : { user : req.body.user } } },
+      { new: true },
       function removeConnectionsCB(err, obj) {
         if(err){
             console.log(err);
-            console.log("Something wrong when updating data!");
+            console.log('Something wrong when updating data!');
             throw(err);
-        }
+        };
       });
   });
 }
